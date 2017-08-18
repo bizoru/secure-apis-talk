@@ -3,10 +3,12 @@ from functools import wraps
 from flask import request, Response
 from flask_jwt import JWT, jwt_required
 from flask_oauth import OAuth
+from flask_cors import CORS, cross_origin
 import datetime
 import os
 
 app = Flask(__name__)
+CORS(app)
 
 app.config['SECRET_KEY'] = 'super-secret'
 app.config['JWT_EXPIRATION_DELTA'] = datetime.timedelta(seconds=10)
@@ -29,8 +31,8 @@ twitter = oauth.remote_app('twitter',
     # user interface on the twitter side.
     authorize_url='https://api.twitter.com/oauth/authenticate',
     # the consumer keys from the twitter application registry.
-    consumer_key=os.getenv('API_CONSUMER_KEY', 'abc123')
-    consumer_secret= os.getenv('API_CONSUMER_SECRET','abc123')
+    consumer_key=os.getenv('API_CONSUMER_KEY','abc123'),
+    consumer_secret=os.getenv('API_CONSUMER_SECRET','abc123')
 )
 
 @twitter.tokengetter
@@ -111,10 +113,10 @@ def index():
     return render_template('index.html')
 
 
-@app.route("/api", methods=['GET'])
+@app.route("/api", methods=['GET','POST'])
 @requires_auth
 def hello():
-    return jsonify({'people':people})
+    return jsonify({'people':people,'success':'ok'})
 
 @app.route("/api/free", methods=['GET'])
 def free_location():

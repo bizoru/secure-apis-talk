@@ -3,6 +3,7 @@ EXPOSE 5000
 RUN pip install Flask
 RUN pip install Flask-JWT
 RUN pip install Flask-OAuth
+RUN pip install flask-cors
 RUN mkdir /code
 COPY  ./code/* /code/
 WORKDIR /code
